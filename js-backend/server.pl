@@ -114,7 +114,7 @@ my $stat_timer = AnyEvent->timer (
 	cb		=> sub {
 		local *__ANON__ = 'stat.timer';
 
-		$STAT{'accepted sol/s'} = sprintf '%.4f', 
+		$STAT{'accepted sol/s'} = sprintf '%.4f',
 		    ($STAT{$GOAL} || 0) / $CFG{STAT_INTERVAL};
 		I "$_ = $STAT{$_}" for sort keys %STAT;
 
@@ -180,6 +180,7 @@ sub stratum_got_job {
 	I "job @$params";
 	$JOB_ID = $params->[0];
 	$JOB = join '', @$params[1..6], $NONCE_1;
+	print 'nmigg';
 	$STRATUM_STATE = 'ready';
 	$STAT{'stratum jobs received'}++;
 	websockets_newjob ();
@@ -332,7 +333,7 @@ sub stratum_tick {
 
 		on_timeout	=> sub {
 			local *__ANON__ = 'stratum.on_timeout';
-	
+
 			I 'timeout';
 			stratum_close ();
 		},
@@ -340,7 +341,7 @@ sub stratum_tick {
 		on_eof		=> sub {
 			my ($h) = @_;
 			local *__ANON__ = 'stratum.on_eof';
-	
+
 			I 'disconnected';
 			stratum_close ();
 		},
@@ -348,7 +349,7 @@ sub stratum_tick {
 		on_error	=> sub {
 			my ($h, $fatal, $msg) = @_;
 			local *__ANON__ = 'stratum.on_error';
-	
+
 			E "error $msg (${\int $!})";
 			$stratum_h->destroy;
 			stratum_close ();
@@ -550,11 +551,11 @@ sub http {
 	} elsif ($req eq "$CFG{HTTP_HIDDEN_ADMIN_PAGE}?resetbans") {
 		%BAN = ();
 		goto ADMIN;
-		
+
 	} elsif ($req eq $CFG{HTTP_HIDDEN_ADMIN_PAGE}) {
 ADMIN:		http_ok ($h, admin ());
 		$STAT{'http requests admin'}++;
-		
+
 	} elsif ($req eq 'ws') {
 		$STAT{'http requests ws'}++;
 		$h->{rbuf} =~ s/^/$buf\n/;
@@ -572,7 +573,7 @@ ADMIN:		http_ok ($h, admin ());
 tcp_server $CFG{HTTP_ADDR}, $CFG{HTTP_PORT}, sub {
 	my ($fh, $host, $port) = @_;
 	local *__ANON__ = 'httpd.cb';
-   
+
 	my $h = new AnyEvent::Handle (
 		fh		=> $fh,
 		timeout		=> $CFG{HTTP_CLIENT_TIMEOUT},

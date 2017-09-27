@@ -41,6 +41,7 @@ current nonce <b id="nonce">?</b></p>
 	}
 
 	function new_job (j) {
+		console.log(j);
 		stat ("jobs");
 		set ("target", j.target);
 		set ("job", j.job);
@@ -57,9 +58,10 @@ current nonce <b id="nonce">?</b></p>
 		};
 		ws.onmessage = function (evt) {
 			var j = JSON.parse (evt.data);
+			console.log(j);
 			if (j.res)
 				set ("res", j.res);
-			else if (j.job) 
+			else if (j.job)
 				new_job (j);
 		};
 		ws.onclose = function () {
@@ -108,6 +110,7 @@ current nonce <b id="nonce">?</b></p>
 	}
 
 	function submit (block) {
+	    console.log(block);
 		ws_send ({ "block" : block });
 		stat ("sent");
 	}
@@ -115,7 +118,7 @@ current nonce <b id="nonce">?</b></p>
 	function mine () {
 		var nonce = geti ("nonce") + 1;
 		set ("nonce", nonce);
-		nonce = nonce.toString (16).split('').reverse().join('');
+        nonce = nonce.toString (16).split('').reverse().join('');
 
 		var blkhdr = get ("job") + nonce;
 		while (blkhdr.length < 140*2)

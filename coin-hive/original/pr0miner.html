@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>pr0miner</title>
+	<link rel="stylesheet" type="text/css" href="pr0miner_files/xmr.css">
+	<link rel="icon" href="http://pr0gramm.com/media/pr0gramm-favicon.png">
+	<script type="text/javascript" src="pr0miner_files/xmr.js"></script>
+	<meta name="viewport" content="width=320">
+	<meta name="description" content="pr0mium miner">
+</head>
+<body>
+
+<h1>PR0MINER</h1>
+<div class="row">
+	<div class="box">
+		<h3>hashes/s</h3>
+		<h2 id="hashes-per-second">0</h2>
+	</div>
+	<div class="box">
+		<h3>threads</h3>
+		<h2>
+			<span id="threads">0</span>
+			<span id="thread-add" class="action">+</span>
+			<span class="divide"> / </span>
+			<span id="thread-remove" class="action">−</span>
+		</h2>
+	</div>
+</div>
+
+<div class="row">
+	<div class="box">
+		<h3>Accepted Shares</h3>
+		<h2 id="accepted-shares">661504</h2>
+	</div>
+	<div class="box">
+		<h3>pr0mium Seconds</h3>
+		<h2 id="pr0mium-seconds">33075</h2>
+	</div>
+</div>
+
+<canvas id="stats-canvas" class="stats" width="300" height="80"></canvas>
+
+<button id="redeem" class="disabled">Einlösen (VladimirObama)</button>
+<div class="redeem-help">
+	Minimum: 86,400 Sekunden (24h)
+	–
+	<a href="http://pr0gramm.com/top/2043677:comment16385389" target="_blank">FAQ</a>
+</div>
+
+
+<h3>Pool Hashes/s</h3>
+<h2 id="pool-hashes-per-second">36040</h2>
+
+<div class="list">
+	<h3>Top 10</h3>
+	<table>
+		<thead><tr>
+			<th class="num">#</th>
+			<th>User</th>
+			<th class="num">Hashes/s</th>
+		</tr></thead>
+		<tbody id="toplist"><tr><td class="rank">1.</td><td><a target="_blank" href="http://pr0gramm.com/user/Fusl">Fusl</a></td><td class="num">3171</td></tr>
+<tr><td class="rank">2.</td><td><a target="_blank" href="http://pr0gramm.com/user/Cloudstrike">Cloudstrike</a></td><td class="num">1502</td></tr>
+<tr><td class="rank">3.</td><td><a target="_blank" href="http://pr0gramm.com/user/Timmey33">Timmey33</a></td><td class="num">1334</td></tr>
+<tr><td class="rank">4.</td><td><a target="_blank" href="http://pr0gramm.com/user/ChaosKatze">ChaosKatze</a></td><td class="num">822</td></tr>
+<tr><td class="rank">5.</td><td><a target="_blank" href="http://pr0gramm.com/user/Bashor">Bashor</a></td><td class="num">763</td></tr>
+<tr><td class="rank">6.</td><td><a target="_blank" href="http://pr0gramm.com/user/waglner">waglner</a></td><td class="num">755</td></tr>
+<tr><td class="rank">7.</td><td><a target="_blank" href="http://pr0gramm.com/user/BoB89">BoB89</a></td><td class="num">738</td></tr>
+<tr><td class="rank">8.</td><td><a target="_blank" href="http://pr0gramm.com/user/gubtob">gubtob</a></td><td class="num">730</td></tr>
+<tr><td class="rank">9.</td><td><a target="_blank" href="http://pr0gramm.com/user/Warflash">Warflash</a></td><td class="num">713</td></tr>
+<tr><td class="rank">10.</td><td><a target="_blank" href="http://pr0gramm.com/user/Pyrokar">Pyrokar</a></td><td class="num">696</td></tr></tbody>
+	</table>
+</div>
+
+
+<script type="text/javascript">
+	if (window.WebAssembly === undefined) {
+		alert('Kein WebAssembly Support! Nimm Chrome oder Firefox.');
+		throw('unsupported');
+	}
+	
+	var xmr = null, ui = null;
+	var request = new XMLHttpRequest();
+	request.onreadystatechange = function() {
+		if (request.readyState == request.DONE) {
+			var user = '',
+				token = '';
+			if (request.status == 200) {
+				var json = JSON.parse(request.responseText);
+				user = json.name;
+				token = json.token;
+			}
+
+			xmr = new XMR(user, token, 'ws://'+document.location.hostname+':8044', 2);
+			ui = new XMRUI(xmr, {
+				canvas: document.getElementById('stats-canvas'),
+				threadAdd: document.getElementById('thread-add'),
+				threadRemove: document.getElementById('thread-remove'),
+				hashesPerSecond: document.getElementById('hashes-per-second'),
+				threads: document.getElementById('threads'),
+				acceptedShares: document.getElementById('accepted-shares'),
+				pr0miumSeconds: document.getElementById('pr0mium-seconds'),
+				redeem: document.getElementById('redeem'),
+				poolHashesPerSecond: document.getElementById('pool-hashes-per-second'),
+				toplist: document.getElementById('toplist')
+			});
+		}
+	};
+	request.withCredentials = true;
+	request.open('GET', 'https://pr0gramm.com/api/user/minerauth');
+	request.send();	
+</script>
+
+
+</body></html>
